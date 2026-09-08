@@ -17,7 +17,7 @@ in
     extraArgs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
-      example = lib.literalExpression ''[ "--trace" ]'';
+      example = lib.literalExpression ''[ "--socket /var/run/rusbmux" ]'';
       description = "Extra command-line arguments passed to the rusbmux daemon.";
     };
   };
