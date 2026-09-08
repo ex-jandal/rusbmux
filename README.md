@@ -36,76 +36,6 @@ or
 paru -S rusbmux-bin
 ```
 
-### Nix (flake)
-
-- Add this to `flake.nix`:
-
-  ```nix
-  inputs = {
-    rusbmux.url = "github:abdullah-albanna/rusbmux"; # or to specify `github:abdullah-albanna/rusbmux/v0.2.1`
-  };
-  ```
-
-- In `configuration.nix` (must receive `inputs`):
-
-  ```nix
-  imports = [ inputs.rusbmux.nixosModules.default ];
-  services.rusbmux.enable = true;
-  ```
-
-- That's it: the module applies its own overlay, so `pkgs.rusbmux` is also
-  available anywhere in your config (`environment.systemPackages = [ pkgs.rusbmux ];`).
-
-### Nix (NixOS)
-
-- Fetch the repo in `configuration.nix` and wire overlay + module:
-
-  ```nix
-  let
-    rusbmux-src = builtins.fetchGit {
-      url = "https://github.com/abdullah-albanna/rusbmux";
-      ref = "main";
-    };
-  in {
-    imports = [ "${rusbmux-src}/nixos-module.nix" ];
-    nixpkgs.overlays = [ (import "${rusbmux-src}/overlay.nix") ];
-    services.rusbmux.enable = true;
-  }
-  ```
-
-- Or just build the package: `import "${rusbmux-src}/default.nix" { inherit pkgs; }`
-- Pin to a specific commit for reproducibility:
-
-  ```nix
-  rusbmux-src = builtins.fetchGit {
-    url = "https://github.com/abdullah-albanna/rusbmux";
-    rev = "<commit-sha>";
-  };
-  ```
-
-- Needs nixpkgs with **Rust ≥ 1.85** (edition 2024) — use a recent
-  `nixos-unstable`/`nixos-26.11+`.
-
-#### Options
-
-| Option        | Type       | Default                          | Description                     |
-| ------------- | ---------- | -------------------------------- | ------------------------------- |
-| `enable`      | boolean    | `false`                          | Enable the systemd service.     |
-| `package`     | package    | `pkgs.rusbmux`                   | Which rusbmux package to run.   |
-| `extraArgs`   | list of strings | `[]`                          | Extra CLI args for the daemon.  |
-
-```nix
-services.rusbmux = {
-  enable = true;
-  extraArgs = [ "--socket" "/run/usbmuxd" ];
-};
-```
-
-### Nix (Manual use)
-
-- `nix run github:abdullah-albanna/rusbmux -- --help`
-- `nix shell github:abdullah-albanna/rusbmux`
-
 ---
 
 ## Running
@@ -141,6 +71,8 @@ sudo rusbmux
 Download the latest installer from the [releases](https://github.com/abdullah-albanna/rusbmux/releases/latest).
 
 Run the installer and follow the setup wizard. `rusbmux` will be installed as a Windows service and start automatically.
+
+---
 
 ## iTunes Compatibility
 
@@ -234,6 +166,82 @@ sudo launchctl bootstrap system /Library/Apple/System/Library/LaunchDaemons/com.
 You can switch between `rusbmux` and Apple's `usbmuxd` at any time by stopping one and starting the other.
 
 </details>
+
+<details>
+<summary><strong>Nix</strong></summary>
+
+### Nix-flake
+
+- Add this to `flake.nix`:
+
+  ```nix
+  inputs = {
+    rusbmux.url = "github:abdullah-albanna/rusbmux"; # or to specify `github:abdullah-albanna/rusbmux/v0.2.1`
+  };
+  ```
+
+- In `configuration.nix` (must receive `inputs`):
+
+  ```nix
+  imports = [ inputs.rusbmux.nixosModules.default ];
+  services.rusbmux.enable = true;
+  ```
+
+- That's it: the module applies its own overlay, so `pkgs.rusbmux` is also
+  available anywhere in your config (`environment.systemPackages = [ pkgs.rusbmux ];`).
+
+### NixOS Module
+
+- Fetch the repo in `configuration.nix` and wire overlay + module:
+
+  ```nix
+  let
+    rusbmux-src = builtins.fetchGit {
+      url = "https://github.com/abdullah-albanna/rusbmux";
+      ref = "main";
+    };
+  in {
+    imports = [ "${rusbmux-src}/nixos-module.nix" ];
+    nixpkgs.overlays = [ (import "${rusbmux-src}/overlay.nix") ];
+    services.rusbmux.enable = true;
+  }
+  ```
+
+- Or just build the package: `import "${rusbmux-src}/default.nix" { inherit pkgs; }`
+- Pin to a specific commit for reproducibility:
+
+  ```nix
+  rusbmux-src = builtins.fetchGit {
+    url = "https://github.com/abdullah-albanna/rusbmux";
+    rev = "<commit-sha>";
+  };
+  ```
+
+- Needs nixpkgs with **Rust ≥ 1.85** (edition 2024) — use a recent
+  `nixos-unstable`/`nixos-26.11+`.
+
+#### Options
+
+| Option        | Type       | Default                          | Description                     |
+| ------------- | ---------- | -------------------------------- | ------------------------------- |
+| `enable`      | boolean    | `false`                          | Enable the systemd service.     |
+| `package`     | package    | `pkgs.rusbmux`                   | Which rusbmux package to run.   |
+| `extraArgs`   | list of strings | `[]`                          | Extra CLI args for the daemon.  |
+
+```nix
+services.rusbmux = {
+  enable = true;
+  extraArgs = [ "--socket" "/run/usbmuxd" ];
+};
+```
+
+### Nix (Manual use)
+
+- `nix run github:abdullah-albanna/rusbmux -- --help`
+- `nix shell github:abdullah-albanna/rusbmux`
+
+</details>
+
 
 ## Using rusbmux as a library
 
