@@ -103,7 +103,7 @@
       )
     // {
       overlays.default = final: prev: {
-        rusbmux = self.packages.${final.system}.default;
+        rusbmux = self.packages.${final.stdenv.hostPlatform.system}.default;
       };
 
       nixosModules.default = {
