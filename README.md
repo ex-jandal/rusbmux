@@ -231,7 +231,7 @@ You can switch between `rusbmux` and Apple's `usbmuxd` at any time by stopping o
 ```nix
 services.rusbmux = {
   enable = true;
-  extraArgs = [ "--socket" "/run/usbmuxd" ];
+  extraArgs = [ "--socket" "/var/run/rusbmux" ];
 };
 ```
 
