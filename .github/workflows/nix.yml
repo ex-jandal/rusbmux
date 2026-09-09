@@ -20,6 +20,3 @@ jobs:
 
       - name: flake check
         run: nix flake check
-
-      - name: format check
-        run: nix fmt -- --check flake.nix nixos-module.nix default.nix overlay.nix

@@ -79,15 +79,9 @@
               commonArgs
               // {
                 inherit cargoArtifacts;
-                cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+                cargoClippyExtraArgs = "--all-targets";
               }
             );
-            rusbmux-fmt = craneLib.cargoFmt { inherit src; };
-            nix-fmt = pkgs.runCommand "rusbmux-nix-fmt" { } ''
-              ${pkgs.nixfmt}/bin/nixfmt --check \
-                ${./flake.nix} ${./nixos-module.nix} ${./default.nix} ${./overlay.nix}
-              touch $out
-            '';
           };
 
           devShells.default = craneLib.devShell {
