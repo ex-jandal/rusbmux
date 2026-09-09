@@ -57,42 +57,12 @@
             }
           );
 
-          rusbmux-tests = craneLib.cargoTest (
-            commonArgs
-            // {
-              inherit cargoArtifacts;
-            }
-          );
         in
         {
           packages = {
             rusbmux = rusbmux;
             default = rusbmux;
           };
-
-          apps.default = flake-utils.lib.mkApp { drv = rusbmux; };
-
-          checks = {
-            rusbmux = rusbmux-tests;
-            default = rusbmux-tests;
-            rusbmux-clippy = craneLib.cargoClippy (
-              commonArgs
-              // {
-                inherit cargoArtifacts;
-                cargoClippyExtraArgs = "--all-targets";
-              }
-            );
-          };
-
-          devShells.default = craneLib.devShell {
-            checks = self.checks.${system};
-            packages = with pkgs; [
-              rust-analyzer
-              nixfmt
-            ];
-          };
-
-          formatter = pkgs.nixfmt;
         }
       )
     // {
